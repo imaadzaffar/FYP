@@ -1,0 +1,66 @@
+program: model_sweep.py
+entity: imaad-zaffar-ucl
+project: fyp-mul
+method: random
+metric:
+  goal: minimize
+  name: mean_diff
+run_cap: 50
+parameters:
+  model_output:
+    values:
+      - mask
+    distribution: categorical
+  model_arch:
+    values:
+      - brain_mri
+    distribution: categorical
+  mask_type:
+    values:
+      - right
+    distribution: categorical
+  criterion_mask:
+    values:
+      - BCE
+    distribution: categorical
+  criterion_length:
+    values:
+      - MSE
+    distribution: categorical
+  criterion:
+    values:
+      - Combined
+    distribution: categorical
+  criterion_alpha:
+    min: 50
+    max: 100
+    distribution: uniform
+  criterion_threshold_epochs:
+    min: 20
+    max: 100
+    distribution: uniform
+  criterion_threshold_length_loss:
+    min: 100
+    max: 200
+    distribution: uniform
+  mask_threshold:
+    value: 0.1
+    distribution: constant
+  learning_rate:
+    value: 3e-5
+    distribution: constant
+  epochs:
+    value: 100
+    distribution: constant
+  batch_size:
+    value: 4
+    distribution: constant
+  val_size:
+    value: 20
+    distribution: constant
+  test_size:
+    value: 20
+    distribution: constant
+  k_folds:
+    value: 5
+    distribution: constant
