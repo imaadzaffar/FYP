@@ -34,46 +34,6 @@ def get_length_line_simple(masks):
 
     return torch.stack(lengths)
 
-def dice_loss(pred, target, smooth=1e-6):
-    intersection = (pred * target).sum()
-    union = pred.sum() + target.sum() + smooth
-    dice_score = (2 * intersection) / union
-    return 1 - dice_score
-
-class CombinedLoss(nn.Module):
-    def __init__(self, adaptive=True, alpha=1.0, threshold_epochs=50, threshold_length_loss=100.0, mask_loss_fn=nn.BCELoss(), length_loss_fn=nn.MSELoss()):
-        super(CombinedLoss, self).__init__()
-        self.alpha = alpha
-        self.adaptive = adaptive
-        self.threshold_epochs = threshold_epochs
-        self.threshold_length_loss = threshold_length_loss
-        self.mask_loss_fn = mask_loss_fn
-        self.length_loss_fn = length_loss_fn
-        self.combined = False
-
-    def trigger_combined(self, epoch, pred_lengths, target_lengths):
-        length_loss = self.length_loss_fn(pred_lengths, target_lengths)
-        length_loss /= self.threshold_length_loss # Scale the length loss to be in the same range as the mask loss
-        if epoch > self.threshold_epochs and length_loss < 1.0:
-            self.combined = True
-        else:
-            self.combined = False
-
-    def forward(self, pred, pred_lengths, targets, target_lengths, epoch):
-        mask_loss = self.mask_loss_fn(pred, targets)
-        length_loss = self.length_loss_fn(pred_lengths, target_lengths)
-        length_loss /= self.threshold_length_loss # Scale the length loss to be in the same range as the mask loss
-
-        # print(f"Mask Loss: {mask_loss}, Length Loss: {length_loss}")
-        # print(mask_loss.grad_fn, length_loss.grad_fn)
-
-        # Combine both losses
-        if self.combined:
-            combined_loss = mask_loss + self.alpha * length_loss
-        else:
-            combined_loss = mask_loss
-        return combined_loss
-
 # Define your new model by extending the loaded model
 class ModelFC(nn.Module):
     def __init__(self, base_model):

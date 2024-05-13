@@ -13,7 +13,7 @@ from utils.helper_functions import convert_pixels_to_mm, get_length_line_simple,
 
 torch.hub.set_dir('/cs/student/projects1/2021/izaffar/.cache/torch/hub')
 
-DATA_DIR = "/cs/student/projects1/2021/izaffar/FYP/FYP-MUL/data"
+DATA_DIR = "../data"
 # for filename in os.listdir(DATA_DIR):
 #     print(filename)
 
